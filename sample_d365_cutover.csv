@@ -1,0 +1,23 @@
+step_id,phase,step_name,owner,duration_mins,depends_on,rollback_possible,notes
+S01,pre-cutover,Final data backup — D365 production database,DBA,60,,Yes,Must complete before any cutover activity begins
+S02,pre-cutover,Freeze all transactions in legacy system,Finance Lead,15,S01,Yes,Communicate to all business users 30 mins before freeze
+S03,pre-cutover,Validate backup integrity and checksum,DBA,30,S01,Yes,Run checksum validation — do not proceed if this fails
+S04,pre-cutover,Confirm D365 production environment readiness,Infra Lead,20,S03,Yes,Network, firewall, Azure AD, and DNS all checked
+S05,pre-cutover,Confirm all UAT sign-offs are in place,PM,15,S04,Yes,Finance, Operations, and Warehouse sign-offs required
+S06,pre-cutover,Brief cutover team and confirm war room,PM,30,S05,Yes,Teams bridge open, contact list distributed
+S07,cutover,Disable legacy system user access,Infra Lead,10,S06,Yes,Revoke all user sessions in legacy ERP
+S08,cutover,Run D365 data migration scripts — master data,DBA,45,S07,No,Chart of accounts, customer master, vendor master
+S09,cutover,Run D365 data migration scripts — open transactions,DBA,90,S08,No,Open POs, open invoices, open sales orders — no rollback once started
+S10,cutover,Validate migrated data against reconciliation report,Finance Lead,45,S09,Yes,Row counts and spot-check on 50 transactions minimum
+S11,cutover,Activate D365 production environment for testing,Infra Lead,15,S10,Yes,Enable access for smoke test users only
+S12,cutover,Smoke test — login and core transaction,Test Lead,30,S11,Yes,5 named test users confirm login, GL posting, and purchase order creation
+S13,cutover,DNS cutover — point all traffic to D365,Infra Lead,15,S12,Yes,30 minute propagation window — monitor closely
+S14,cutover,Enable full user access to D365 production,Infra Lead,10,S13,Yes,Phased — Finance first, then Operations, then Warehouse
+S15,post-cutover,Full regression test — Finance module,Test Lead,120,S14,Yes,AP, AR, GL, and bank reconciliation
+S16,post-cutover,Full regression test — Procurement module,Test Lead,60,S14,Yes,Purchase orders, receipts, and vendor invoices
+S17,post-cutover,Performance baseline check — response times,Infra Lead,30,S15,Yes,All response times within agreed SLA thresholds
+S18,post-cutover,First real transaction posted by Finance team,Finance Lead,20,S17,Yes,Live GL journal posted and confirmed by Finance Director
+S19,bau-handover,Hypercare team briefing,PM,30,S18,Yes,Support rota, escalation path, and known issues communicated
+S20,bau-handover,Legacy system access fully revoked,Infra Lead,15,S19,Yes,No user should be able to access legacy system post go-live
+S21,bau-handover,Support ticket queue opened and monitored,Service Desk,15,S20,Yes,All users have support contact details
+S22,bau-handover,Project team stand-down confirmation,PM,15,S21,Yes,Sign-off from Programme Sponsor required before team stands down

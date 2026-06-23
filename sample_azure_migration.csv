@@ -1,0 +1,21 @@
+step_id,phase,step_name,owner,duration_mins,depends_on,rollback_possible,notes
+A01,pre-cutover,Final snapshot of on-premise servers,Infra Lead,45,,Yes,Snapshot all VMs before migration begins
+A02,pre-cutover,Validate Azure landing zone readiness,Cloud Architect,30,A01,Yes,VNet, NSG, storage accounts, and resource groups confirmed
+A03,pre-cutover,Confirm Azure AD sync is working correctly,Infra Lead,20,A02,Yes,All user accounts synced and tested
+A04,pre-cutover,Notify all users of maintenance window,PM,15,A03,Yes,Email sent 24 hours and 1 hour before cutover
+A05,pre-cutover,Put on-premise systems into maintenance mode,Infra Lead,10,A04,Yes,Prevent new connections during migration
+A06,cutover,Migrate workload 1 — file server to Azure Files,Infra Lead,60,A05,Yes,Azure File Sync used — validate file counts after
+A07,cutover,Migrate workload 2 — application servers to Azure VMs,Cloud Architect,90,A06,Yes,Lift and shift — validate application startup after migration
+A08,cutover,Migrate workload 3 — database to Azure SQL,DBA,120,A07,No,Full database migration — no rollback once data is in Azure SQL
+A09,cutover,Validate database integrity post migration,DBA,45,A08,Yes,Row counts, referential integrity checks, and spot queries
+A10,cutover,Update DNS records to point to Azure endpoints,Infra Lead,20,A09,Yes,TTL set to 5 minutes — monitor propagation
+A11,cutover,Update firewall rules and NSG policies,Infra Lead,30,A10,Yes,Allow only required ports and IP ranges
+A12,cutover,Smoke test — application connectivity from Azure,Test Lead,30,A11,Yes,End-to-end test of all critical application paths
+A13,cutover,Enable user access to Azure-hosted systems,Infra Lead,15,A12,Yes,Phased — IT first, then pilot group, then all users
+A14,post-cutover,Full application regression test,Test Lead,90,A13,Yes,All critical business processes tested
+A15,post-cutover,Performance baseline — Azure vs on-premise,Infra Lead,30,A14,Yes,Response times and throughput compared against baseline
+A16,post-cutover,Security scan — Azure environment,Security Lead,60,A15,Yes,Vulnerability scan of all migrated workloads
+A17,post-cutover,Cost baseline — confirm Azure spend is within budget,Cloud Architect,20,A16,Yes,Check Azure Cost Management dashboard
+A18,bau-handover,Decommission on-premise servers,Infra Lead,30,A17,Yes,Only after 5 days of stable Azure operation
+A19,bau-handover,Update runbooks and IT documentation,Infra Lead,60,A18,Yes,All operational procedures updated for Azure environment
+A20,bau-handover,Hypercare period begins — Azure support monitoring,Service Desk,15,A19,Yes,Enhanced monitoring for first 2 weeks post migration
